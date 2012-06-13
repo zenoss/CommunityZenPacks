@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.fdeckert.myDeviceIssues.git"
+COMMIT="00f8031807c333244bb975ba7308c9b73d83456b"

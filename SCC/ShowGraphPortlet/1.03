@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.SCC.ShowGraphPortlet.git"
+COMMIT="7189f46d853b575bf3e9ba6dfa1ef60799d80c09"

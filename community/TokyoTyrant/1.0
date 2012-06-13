@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.TokyoTyrant.git"
+COMMIT="092a560a627714dd22f7a92da1b8fada997be719"

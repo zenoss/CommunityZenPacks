@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.vaibhav.brocadeswitches.git"
+COMMIT="ea42eaa05f3bd12fd3221e5908e3f3ade759f82f"

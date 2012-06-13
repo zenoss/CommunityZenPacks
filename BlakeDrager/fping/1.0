@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.BlakeDrager.fping.git"
+COMMIT="cb70b15e12c8f4ebd8fd5a3c39c8f3dbd4427431"

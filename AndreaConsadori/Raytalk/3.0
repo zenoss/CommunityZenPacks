@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.Raytalk.git"
+COMMIT="a56c0e4104777a24acc71dfc6bf78769d28f487c"

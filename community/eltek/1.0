@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.eltek.git"
+COMMIT="591e7deb26f158d9deac22a4112e3f3693e7b180"

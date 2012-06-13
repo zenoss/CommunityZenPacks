@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/j053ph4/ZenPacks.community.zenHttpComponent.git"
+COMMIT="a5d998ac7c2b87ce0f2c08e735803582e760f92c"

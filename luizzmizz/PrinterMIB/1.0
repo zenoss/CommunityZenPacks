@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/luizzmizz/ZenPacks.luizzmizz.PrinterMIB.git"
+COMMIT="ac4a1ed0602109ed9279b2428317b53c238a4dc8"

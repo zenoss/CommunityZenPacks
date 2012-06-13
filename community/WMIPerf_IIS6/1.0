@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.WMIPerf_IIS6.git"
+COMMIT="2562c5e50dd495130dc0c7a43c7b8eccd18de3db"

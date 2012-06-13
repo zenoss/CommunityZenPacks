@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.TwoNMS.PrinterMIB.git"
+COMMIT="b134d00b2c98041f010c0e244e0a3b37ceed0089"

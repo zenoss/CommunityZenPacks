@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.WMIDataSource.git"
+COMMIT="859613847dcaac50dedf1024bf56cad4cc8a1997"

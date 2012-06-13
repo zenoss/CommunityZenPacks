@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.MJW.BarracudaMonitor.git"
+COMMIT="572b599c589ed3ab767e46fbfca07680fef19c3a"

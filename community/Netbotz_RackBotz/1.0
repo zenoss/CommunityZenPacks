@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.Netbotz_RackBotz.git"
+COMMIT="3e84c39788a3be53aa18766f26a778423d01fbdb"

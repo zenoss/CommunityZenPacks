@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.LenovoRDThinkServer.git"
+COMMIT="8a7aa50592bdcdc680c2d9ef23b62eb3163f927e"

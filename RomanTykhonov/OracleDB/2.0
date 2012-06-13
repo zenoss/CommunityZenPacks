@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.RomanTykhonov.OracleDB.git"
+COMMIT="ebc3b37ebd92a797505578185e0ce04a2591c353"

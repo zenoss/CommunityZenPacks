@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.DellM1000e.git"
+COMMIT="30196f272f4bd5f94fc69303aaefdb41c5d9aa96"

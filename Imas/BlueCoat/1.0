@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Imas.BlueCoat.git"
+COMMIT="cd46d7d0ee60be9c6fe0fbb4948783280b474c7a"

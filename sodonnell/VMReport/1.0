@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.sodonnell.VMReport.git"
+COMMIT="ec8eba8b92ab2868545f89b840e5b92a771662b0"

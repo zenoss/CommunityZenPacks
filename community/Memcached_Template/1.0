@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.Memcached_Template.git"
+COMMIT="679b4de5c73ce0b4b276836e360e40810a844c30"

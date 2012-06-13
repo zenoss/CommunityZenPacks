@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.NetWare.git"
+COMMIT="29f0548059eb9fdaac445af8ff87267644769b74"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.MSIAS_RadiusServer.git"
+COMMIT="a79a319f2983ee6fd4eb531ab05b19e7edbac679"

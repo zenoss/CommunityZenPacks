@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Opengear.ConsoleServer.git"
+COMMIT="1299c6ec468575dc41e539862a0663044609a08c"

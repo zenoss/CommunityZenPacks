@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.RangeThreshold.git"
+COMMIT="3e1162e6b406c2571c47b7a866cbf46725ca7474"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.CelerraFileSystem.git"
+COMMIT="ab17d8175891846032a8b173ac60528b3d6c5c7d"

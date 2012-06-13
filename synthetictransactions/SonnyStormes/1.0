@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.synthetictransactions.SonnyStormes.git"
+COMMIT="dfb03eccbe6b5c4f2a8c9b2c645c63cdb4e1cca7"

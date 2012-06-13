@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.Netasq.git"
+COMMIT="d477147bd19084b05bc5ffc128301f39d10458b5"

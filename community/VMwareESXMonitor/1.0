@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.VMwareESXMonitor.git"
+COMMIT="e65ca8e19637a23b420c189a555eaec7a34d5e6d"

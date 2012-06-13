@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.EventGraph.BySeverity.git"
+COMMIT="736b081820b56f9b4c6f25c4dd9ec46723b071d3"

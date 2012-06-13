@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.HPMon.git"
+COMMIT="ae0679f8361384f07310a28feb0105fcbd183311"

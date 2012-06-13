@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.Asterisk16.git"
+COMMIT="070f60b7fa97ac02c27fe6e1cb7d9f65cd6f3856"

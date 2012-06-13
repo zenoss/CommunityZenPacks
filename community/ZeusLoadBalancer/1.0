@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.ZeusLoadBalancer.git"
+COMMIT="72e636c1fe188afa0c0b2e1a0ee5c48eae0c941b"

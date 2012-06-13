@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/j053ph4/ZenPacks.community.zenAppProfiler"
+COMMIT="e41d030d67b5df8e41a40f180fa1f57656f20a03"

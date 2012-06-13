@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.Motorola.git"
+COMMIT="f7b5e7e8db48a707d42c052e165d56b2c0052a98"

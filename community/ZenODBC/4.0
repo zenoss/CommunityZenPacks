@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.ZenODBC.git"
+COMMIT="da2e1eca118dca0a3eee39abea180b2136000921"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/rebelinux/ZenPacks.community.BrocadeSanSW.git"
+COMMIT="824ad27b540f27600b3c4aa4e1a911c3d920e5a2"

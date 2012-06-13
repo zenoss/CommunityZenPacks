@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.Aruba.git"
+COMMIT="d2ca2d2c8c896117691db01f8fb527f1a121f9e2"

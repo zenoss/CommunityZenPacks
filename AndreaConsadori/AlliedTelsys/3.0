@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.AlliedTelsys.git"
+COMMIT="25b56ebeee260c60afafe80f108a52ce2775a884"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.TijmenvandenBrink.JuniperIVE.git"
+COMMIT="d0d29167253dee7ff92bb6a61904ae0df4d844a4"

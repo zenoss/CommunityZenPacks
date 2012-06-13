@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.Mandriva.git"
+COMMIT="439aeabab3af6957f2663379513d89bf0c38fdeb"

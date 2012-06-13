@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.puzzle.VMReportXen.git"
+COMMIT="3384f5e8767c9473b3942a4d344aabb81c650453"

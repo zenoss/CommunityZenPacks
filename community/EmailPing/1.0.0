@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.EmailPing.git"
+COMMIT="c84b5ae2e3bcab019c4ba0e464c60666d8c62632"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.HP.Proliant.MIBs.git"
+COMMIT="346b8b0276b11322f9040114655ff8e1ee6aa22a"

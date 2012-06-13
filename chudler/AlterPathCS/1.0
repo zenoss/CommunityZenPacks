@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.chudler.AlterPathCS.git"
+COMMIT="f13075231d298e7b4ca641a1e39f73703ac7a398"

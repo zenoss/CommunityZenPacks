@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.CIMHardwareMon.git"
+COMMIT="a39e1bc93809b8647b805b720beb4a38d881d9f0"

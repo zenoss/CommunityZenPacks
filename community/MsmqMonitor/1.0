@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.MsmqMonitor.git"
+COMMIT="d18510fe08bfadf49e02fdf14bd2b7b25f74a651"

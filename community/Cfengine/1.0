@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.Cfengine.git"
+COMMIT="e5d9564ae49c29adfee5ef14ed14261ed1ba44a0"

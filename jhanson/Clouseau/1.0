@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/jhanson/ZenPacks.jhanson.Clouseau.git"
+COMMIT="448a4954d0c4b0864edae805e920f92ebaf85ef0"

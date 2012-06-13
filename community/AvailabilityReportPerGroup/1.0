@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.AvailabilityReportPerGroup.git"
+COMMIT="84e4f7a3ca3297afc95dcaced218bf7f283f1db7"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.JohnBeck.power.AP7841.git"
+COMMIT="c3f335fef891acd50967560f8ecf89f0b25de811"

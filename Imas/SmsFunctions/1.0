@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Imas.SmsFunctions.git"
+COMMIT="e058ac733872dc63642992d30baf0cc766431746"

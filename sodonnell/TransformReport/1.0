@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.sodonnell.TransformReport.git"
+COMMIT="41569edba0ffedb66a2fa4950d50d377e98481f6"

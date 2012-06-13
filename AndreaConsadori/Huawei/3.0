@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.Huawei.git"
+COMMIT="afd8dd1491d0e83a4c05fabf6ba7b53e65a2ee07"

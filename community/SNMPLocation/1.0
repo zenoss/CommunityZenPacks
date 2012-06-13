@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.SNMPLocation.git"
+COMMIT="867a466ad15f14d5999676920e5030876f20477f"

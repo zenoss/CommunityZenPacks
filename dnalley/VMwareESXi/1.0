@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.dnalley.VMwareESXi.git"
+COMMIT="08a39849901767bad99d9bf65a8a86539d9e79b5"

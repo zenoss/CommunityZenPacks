@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.SunMibMonitor.git"
+COMMIT="44fb23ed3b64a71765b58b7437d23ae76bbc0649"

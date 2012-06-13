@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/j053ph4/ZenPacks.community.zenIbmMQ.git"
+COMMIT="ddf21b2d14c54c7f2c88dee600a2b65ede37ebd3"

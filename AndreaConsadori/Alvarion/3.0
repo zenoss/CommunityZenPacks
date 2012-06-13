@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.Alvarion.git"
+COMMIT="c8c3a9174b7f0c89491162a7f4a06498dff288fd"

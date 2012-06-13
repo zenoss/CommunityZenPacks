@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/j053ph4/ZenPacks.community.zenMicrosoftMQ.git"
+COMMIT="230186f5e758b79d13b230d22eb6c33532a36d39"

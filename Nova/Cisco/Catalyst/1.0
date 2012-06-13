@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Nova.Cisco.Catalyst.git"
+COMMIT="f7158d2995ba5a6e164c53896c1698f74bfda351"

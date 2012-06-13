@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.chudler.GoogleAppEngine.git"
+COMMIT="fafbdddb3fdc3f62028d8655de1ab9b2ab488ec5"

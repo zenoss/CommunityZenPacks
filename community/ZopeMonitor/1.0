@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/simplesconsultoria/ZenPacks.community.ZopeMonitor.git"
+COMMIT="50ed14ed3636ab4185ea68f6a33178149524a6a8"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.AndreaConsadori.MRV.git"
+COMMIT="b60f3649ad03f80b0731c1fc4f987e97512e8e2c"

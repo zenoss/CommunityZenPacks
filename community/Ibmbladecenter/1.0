@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/rebelinux/ZenPacks.community.Ibmbladecenter.git"
+COMMIT="dadc5a979a448058c84395391d7856d17b667185"

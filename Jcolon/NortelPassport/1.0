@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Jcolon.NortelPassport.git"
+COMMIT="801d0c406f1be99cbfccb6cf76e4ce618b783f43"

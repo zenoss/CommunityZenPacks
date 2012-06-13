@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.HPEVAMon.git"
+COMMIT="804ebf984df88bd0d9ced1f7e1f06c29509be140"

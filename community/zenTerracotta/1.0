@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/j053ph4/ZenPacks.community.zenTerracotta.git"
+COMMIT="4efa8c0de3a0f82eb959a9fe58fdef8d10be7d2a"

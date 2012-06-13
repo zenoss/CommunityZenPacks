@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.chudler.xmppBot.git"
+COMMIT="b0f42202dfe454e3196976ed8f844716ffe7936d"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.SwiftCM2.git"
+COMMIT="a8e42ad22f538caeb67d223a587e79331f8a23da"

@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.SMISMon.git"
+COMMIT="776c0f4ff5dd6d5a2a664e1f7bc8ec76ccbea892"

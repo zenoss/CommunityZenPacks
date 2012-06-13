@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.DellSNMPTransforms.git"
+COMMIT="1b84ab5d13c2c6f860ebbfa7ecce45843fcc384c"

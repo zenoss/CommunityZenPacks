@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/Darkemon/ZenPacks.Darkemon.ZenCustomMap.git"
+COMMIT="02ed4982792eafc3da90a9aa4b97918498e7c26d"

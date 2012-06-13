@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Jcolon.NortelMibs.git"
+COMMIT="66e24fc7bde4ff9bc3d8102aba90b52eca9a104a"

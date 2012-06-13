@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="https://github.com/kb8u/ZenPacks.Merit.AdvaFSP3000R7.git"
+COMMIT="8dff5a427237f5da1a76f899858e235ed40000b4"

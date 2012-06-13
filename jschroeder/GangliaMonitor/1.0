@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.jschroeder.GangliaMonitor.git"
+COMMIT="44ae83687e829d8bd4b4f4cb1613cad6a9ff56dc"

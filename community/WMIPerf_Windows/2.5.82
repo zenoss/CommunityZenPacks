@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/epuzanov/ZenPacks.community.WMIPerf_Windows.git"
+COMMIT="fa1054d086be1acddc2ba16a383a593a5bb28ba6"

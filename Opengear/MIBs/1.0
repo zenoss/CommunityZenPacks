@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Opengear.MIBs.git"
+COMMIT="c17215eb95fa2549bbb116761fc8c3f85106ea14"

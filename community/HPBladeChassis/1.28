@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.HPBladeChassis.git"
+COMMIT="09ba7338cc071dfd9f506eb33df6dccfdd8e156d"

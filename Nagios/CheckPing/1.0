@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.Nagios.CheckPing.git"
+COMMIT="8507c8bef9f3b274288435e77124fb6fae1be753"
