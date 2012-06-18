@@ -1,3 +1,4 @@
 SRC_TYPE="git"
 SRC_URI="git://github.com/zenoss/ZenPacks.community.InterfaceGraphs.git"
 COMMIT="ac27653fc5acac55b4be47f9bc959b0e13d0dc0c"
+HOMEPAGE="http://community.zenoss.org/docs/DOC-10226"
