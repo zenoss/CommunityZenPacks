@@ -1,0 +1,56 @@
+# "app" meta-category is for software applications
+
+app-auth		Authentication systems
+app-backup		Backup system
+app-crm			Customer Relationship Applications
+app-db			Databases
+app-example		Example Code
+app-java		Java
+app-log			Logging applications
+app-media		Media/streaming applications
+app-microsoft		Microsoft applications
+app-queue		Message queue applications
+app-virt		Virtualization software
+app-web			Web servers, proxy servers
+
+# "net" meta-category is for network devices and Cloud services
+# should it just be network equipment?
+
+net-analysis		Network analysis equipment and software
+net-cisco		Cisco equipment
+net-cloud		Cloud services
+net-core		Switches, routers, and transports
+net-dns			DNS-related
+net-fiber		Fiber - may get merged into net-core
+net-firewall		Firewalls
+net-fs			Network/distributed file systems
+net-mail		Mail servers (maybe move to app-mail?)
+net-multi
+net-nas
+net-ping
+net-proxy
+net-radius
+net-remote
+net-router
+net-snmp
+net-storage
+net-switch
+net-sysman
+net-voip
+net-vpn
+net-wan
+net-wireless
+sys-blade
+sys-command
+sys-config
+sys-environ
+sys-extension
+sys-microsoft
+sys-platform
+sys-power
+sys-print
+sys-report
+sys-server
+sys-stack
+sys-storage
+sys-virt

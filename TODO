@@ -1,0 +1,11 @@
+Things still to do:
+
+1. community/ ZenPacks - there are a few stragglers here that need to be categorized.
+
+2. In a "default" file alongside each version file, a HOMEPAGE="http://foo.bar.com" entry should
+   be created. The concept of the "global" file is that it would contain default settings that
+   apply to every version of a ZenPack.
+
+3. The Microsoft ZenPacks probably need a bit of re-organization. I have them in sys-microsoft
+   and app-microsoft.
+
