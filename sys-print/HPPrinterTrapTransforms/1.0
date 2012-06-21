@@ -1,0 +1,3 @@
+SRC_TYPE="git"
+SRC_URI="git://github.com/zenoss/ZenPacks.community.HPPrinterTrapTransforms.git"
+COMMIT="b4ce517071fd09a6953abe65011a775620858b34"
