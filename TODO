@@ -6,6 +6,9 @@ Things still to do:
    be created. The concept of the "global" file is that it would contain default settings that
    apply to every version of a ZenPack.
 
+2a. It would also be great to add a DESCRIPTION="" to each default file containing a short one-line
+   description of the ZenPack's functionality.
+
 3. The Microsoft ZenPacks probably need a bit of re-organization. I have them in sys-microsoft
    and app-microsoft.
 
