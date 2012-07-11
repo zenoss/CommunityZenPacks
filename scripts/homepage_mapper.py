@@ -19,7 +19,7 @@ logger.setLevel(logging.INFO)
 
 #Amount of seconds to sleep between page fetches
 #so we don't toast jive by accident
-JIVE_SLEEP_SAVER = 2
+JIVE_SLEEP_SAVER = 0
 
 class HomepageMapper(object):
     """
@@ -104,8 +104,7 @@ class HomepageMapper(object):
                     break
 
 
-
-
 if __name__ == '__main__':
     mapper = HomepageMapper()
     mapper.do_map()
+   	
