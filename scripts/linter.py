@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 A minimal utility to help with some standardizations
 """
