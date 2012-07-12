@@ -4,8 +4,21 @@ die() {
 	echo $*
 	exit 1
 }
+
+try() {
+	"$@"
+	if [ $? -ne 0 ]; then
+		echo "Command failure: $@"
+		exit 1
+	fi
+}
+
 if [ $# != 2 ]; then
 	echo "Please specify python version to build for, and build file."
+	exit 1
+fi
+if [ ! -e $2 ]; then
+	echo "Specified file $2 does not exist."
 	exit 1
 fi
 PKGDIR=/var/tmp/zenpacks
@@ -35,7 +48,7 @@ if [ ! -e "$BUILDFILE" ]; then
 	echo "Please specify build file."
 	exit 1
 else
-	. $BUILDFILE
+. $BUILDFILE
 fi
 if [ "$SRC_URI" = "" ]; then
 	echo "Build file $BUILDFILE missing required variable SRC_URI."
@@ -52,7 +65,6 @@ fi
 
 rm -rf $TMPDIR
 install -d $TMPDIR || die "Couldn't create temp dir: $TMPDIR"
-CHECKED_OUT=""
 
 prep_sources() {
 	install -d $(dirname $CLONECACHE) || die
@@ -60,17 +72,15 @@ prep_sources() {
 	if [ ! -d $CLONECACHE ]; then
 		git clone $SRC_URI $(basename $CLONECACHE) || die "Couldn't clone git repository"
 	else
-		git fetch
+		cd $CLONECACHE || die
+		try git fetch
 	fi
+	S=$TMPDIR/$PN
 	cd $TMPDIR || die "Couldn't change into TMPDIR" 
 	cp -a $CLONECACHE . || die "Couldn't copy from clone cache"
-	S=$TMPDIR/$PN
 	cd $S || die "Couldn't change into source directory"
-	if [ "$CHECKED_OUT" != "yes" ]; then
-		git checkout -q $COMMIT || die "Couldn't checkout specified commit: $COMMIT"
-		echo "At commit $COMMIT"
-	fi
-	CHECKED_OUT="yes"
+	git checkout -q $COMMIT || die "Couldn't checkout specified commit: $COMMIT"
+	echo "At commit $COMMIT"
 }
 
 build_zenpack() {
@@ -86,6 +96,44 @@ build_zenpack() {
 	if [ ! -e setup.py ]; then
 		echo "setup.py does not exist. Cannot continue."
 		exit 1
+	else
+		#rework setup.py from scratch
+		sed -n -e '1,/STOP_REPLACEMENTS/p' setup.py > setup.py.new
+		#tweak setup.py to include custom info from us:
+		sed -i \
+		-e "/^PREV_ZENPACK_NAME/d" \
+		-e "s/^NAME[[:space:]]*=/PREV_ZENPACK_NAME=/" \
+		-e "/^PREV_ZENPACK_NAME/a\NAME=\"$CAT/$PN\"" \
+		-e "/^VERSION[[:space:]]*=/cVERSION=\"$PV\"" \
+		setup.py.new || die "sed fail"
+		# grab any custom package data
+		pkgdata="$( sed -n -e '/^[[:space:]]*package_data/,/[}],/p' setup.py)"
+		if [ -n "$pkgdata" ]; then
+			# remove trailing comma
+			echo "${pkgdata%,}" >> setup.py.new
+		else
+			echo "package_data = {}" >> setup.py.new
+		fi
+		cat >> setup.py.new << EOF
+from setuptools import setup, find_packages
+
+setup(
+    name = NAME,
+    version = VERSION,
+    author = AUTHOR,
+    license = LICENSE,
+    compatZenossVers = COMPAT_ZENOSS_VERS,
+    prevZenPackName = PREV_ZENPACK_NAME,
+    namespace_packages = NAMESPACE_PACKAGES,
+    packages = find_packages(),
+    include_package_data = True,
+    package_data = package_data,
+    install_requires = INSTALL_REQUIRES,
+    entry_points = { 'zenoss.zenpacks' : '%s = %s' % (PACKAGES[-1], PACKAGES[-1]) },
+    zip_safe = False
+)
+EOF
+		cat setup.py.new > setup.py || die
 	fi
 	$PYTHON setup.py bdist_egg || die "Couldn't build ZenPack"
 	artifact="$(ls dist/*.egg)"
