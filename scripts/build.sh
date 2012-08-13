@@ -101,9 +101,6 @@ build_zenpack() {
 		sed -n -e '1,/STOP_REPLACEMENTS/p' setup.py > setup.py.new
 		#tweak setup.py to include custom info from us:
 		sed -i \
-		-e "/^PREV_ZENPACK_NAME/d" \
-		-e "s/^NAME[[:space:]]*=/PREV_ZENPACK_NAME=/" \
-		-e "/^PREV_ZENPACK_NAME/a\NAME=\"$CAT/$PN\"" \
 		-e "/^VERSION[[:space:]]*=/cVERSION=\"$PV\"" \
 		setup.py.new || die "sed fail"
 		# grab any custom package data
