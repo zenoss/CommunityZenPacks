@@ -1,0 +1,91 @@
+#!/usr/bin/env python2
+
+import sys, os, string
+import urllib
+from lxml import etree
+
+def updateZpDefs(url="http://wiki.zenoss.org/Special:ViewXML?title=Special%3AViewXML&namespaces%5B500%5D=on&simplified_format=on"):
+	# Update ZenPack definition XML file from wiki, update our internal xmlroot variable with new data as well.
+	global xmlroot
+	a = urllib.urlopen(url)
+	l = open(os.path.join(zpconf, "zpdefs.xml"), 'w')
+	i = a.read()
+	xmlroot = etree.fromstring(i)
+	l.write(i)
+	a.close()
+	l.close()
+
+def readZpDefs():
+	print("Reading in XML ZenPack definitions...")
+	# Read in existing XML definition file on disk, use it to generate internal xmlroot variable.
+	global xmlroot
+	l = open(os.path.join(zpconf, "zpdefs.xml"), 'r')
+	xmlroot = etree.parse(l)
+	l.close()
+
+# INITIAL GLOBAL VARIABLE DEFINITIONS:
+
+xmlroot = None
+
+def setup():
+	# initialize directories:
+	global zphome, zpconf, zpdefs
+	a = os.getenv("ZENHOME")
+	# try to use ZENHOME/etc to store zpdefs.xml; otherwise fall back to /var/tmp/zbuild/etc:
+	if a != None:
+		zphome=a
+	else:
+		zphome="/var/tmp/zpbuild"
+	zpconf=zphome + "/etc"
+	zpdefs=zpconf + "/zpdefs.xml"
+	if not os.path.exists(zpconf):
+		print("Warning: %s does not exist -- creating..." % zpconf)
+		os.makedirs(zpconf)
+
+if __name__ == "__main__":
+	setup()
+	if not os.path.exists(zpconf) or ( len(sys.argv) == 2 and sys.argv[1] == "sync"):
+		print "Updating XML ZenPack definitions..."
+		updateZpDefs()
+		print "Done."
+		sys.exit(0)
+	else:
+		readZpDefs()
+
+for e in xmlroot.iter("Page"):
+	zenpack = e.xpath("ZenPack")
+	if len(zenpack) == 0:
+		# likely a redirect
+		continue
+	else:
+		zenpack = zenpack[0]
+	title = e.xpath("Title")[0]
+	homepage = zenpack.xpath("Homepage")
+	if len(homepage):
+		homepage = homepage[0].text
+	else:
+		homepage = None
+	zpname = zenpack.xpath("ZenPack_name")[0].text
+	src_uri = zenpack.xpath("Source_URI")
+	if len(src_uri):
+		src_uri = src_uri[0].text
+	else:
+		src_uri = None
+	print title.text, "(%s)" % zpname,  src_uri
+	releases = {} 
+	for r in e.xpath("Release"):
+		out = {}
+		version = r.xpath("Version")[0].text
+		compat = r.xpath("Compatible_with")[0].text.split(",")
+		out["compat"] = []
+		for x in compat:
+			x = x.strip()
+			if len(x):
+				out["compat"].append(x)
+		try:
+			out.tag = r.xpath("Tag")[0].text
+		except:
+			pass
+		releases[version] = out
+	for r in releases:
+		print "  ",r, releases[r]["compat"]
