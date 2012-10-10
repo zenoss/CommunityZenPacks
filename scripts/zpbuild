@@ -23,6 +23,23 @@ def readZpDefs():
 	xmlroot = etree.parse(l)
 	l.close()
 
+def vercmp(v1,v2):
+	v1s = v1.split(".")
+	v2s = v2.split(".")
+	while len(v1s) < 3:
+		v1s.append("0")
+	while len(v2s) < 3:
+		v2s.append("0")
+	pos = 0
+	while pos < 3:
+		x = int(v1s[pos]) - int(v2s[pos])
+		if x == 0:
+			pos += 1
+			continue
+		else:
+			return x
+	return 0
+
 # INITIAL GLOBAL VARIABLE DEFINITIONS:
 
 xmlroot = None
@@ -87,5 +104,7 @@ for e in xmlroot.iter("Page"):
 		except:
 			pass
 		releases[version] = out
-	for r in releases:
+	sorted_relkeys = releases.keys()
+	sorted_relkeys.sort(cmp=vercmp)
+	for r in sorted_relkeys:
 		print "  ",r, releases[r]["compat"]
