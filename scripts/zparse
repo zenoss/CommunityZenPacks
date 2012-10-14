@@ -73,9 +73,9 @@ def setup():
 if __name__ == "__main__":
 	setup()
 	if not os.path.exists(zpconf) or ( len(sys.argv) == 2 and sys.argv[1] == "sync"):
-		print "Updating XML ZenPack definitions..."
+		sys.stderr.write("Updating XML ZenPack definitions...\n")
 		updateZpDefs()
-		print "Done."
+		sys.stderr.write("Done.\n")
 		sys.exit(0)
 	else:
 		readZpDefs()
@@ -100,7 +100,6 @@ for e in xmlroot.iter("Page"):
 		src_uri = src_uri[0].text
 	else:
 		src_uri = None
-	#print title, "(%s)" % zpname,  src_uri
 	releases = {} 
 	for r in e.xpath("Release"):
 		out = {}
@@ -178,4 +177,4 @@ for build in build_set:
 	if "src_uri" in aud and aud["src_uri"] != None:
 		xml_src_uri = etree.SubElement(xml_child,"src_uri")
 		xml_src_uri.text = aud["src_uri"]
-print etree.tostring(xml_root, pretty_print=True)
+print etree.tostring(xml_root, pretty_print=True),
