@@ -162,7 +162,7 @@ xml_root = etree.Element("builds")
 for build in build_set:
 	title, version, python_version = build
 	aud = aux_data[title]
-	xml_child = etree.SubElement(xml_root, "build")	
+	xml_child = etree.Element("build")
 	xml_title = etree.SubElement(xml_child, "title")
 	xml_title.text = title
 	xml_version = etree.SubElement(xml_child, "version")
@@ -174,7 +174,12 @@ for build in build_set:
 	if "tag" in aud and aud["tag"] != None:
 		xml_tag = etree.SubElement(xml_child,"tag")
 		xml_tag.text = aud["tag"]
+	else:
+		continue
 	if "src_uri" in aud and aud["src_uri"] != None:
 		xml_src_uri = etree.SubElement(xml_child,"src_uri")
 		xml_src_uri.text = aud["src_uri"]
+	else:
+		continue
+	xml_root.append(xml_child)
 print etree.tostring(xml_root, pretty_print=True),
