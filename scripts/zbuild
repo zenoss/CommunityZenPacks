@@ -1,0 +1,29 @@
+#!/usr/bin/env python2
+
+import sys, os, string
+import urllib
+from lxml import etree
+from subprocess import Popen
+
+if len(sys.argv) != 2:
+	print("Please specify input file.")
+	sys.exit(1)
+
+if not os.path.exists(sys.argv[1]):
+	print("Cannot find input file.")
+	sys.exit(1)
+
+def readBuildDefs(fn):
+	l = open(fn, 'r')
+	xmlroot = etree.parse(l)
+	l.close()
+	return xmlroot
+
+xmlroot = readBuildDefs(sys.argv[1])
+for b in xmlroot.iter("build"):
+	build_env = {}
+	for el in ("title", "version", "python_version", "zenpack_name", "tag"):
+		xml_el = b.xpath(el)
+		if len(xml_el) > 0:
+			build_env[el.upper()] = xml_el[0].text
+	Popen("build.sh", env=build_env)
