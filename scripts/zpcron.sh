@@ -1,4 +1,4 @@
 #!/bin/bash
 mydir=$(dirname $(readlink -f $0))
-echo $mydir
+cd $mydir
 $mydir/zpparse && $mydir/zpbuild
