@@ -4,34 +4,23 @@ import sys, os, string
 import urllib
 from lxml import etree
 from zpbuild_globals import build_targets, python_targets, zpconf, zpdefs, builddefs
-
-build_targets = {
-	"Zenoss Core 3.2.x" : None,
-	"Zenoss Resource Manager 4.1.x" : None,
-	"Zenoss Core 4.2.x" : None 
-}
-
-python_targets = {
-	"Zenoss Core 3.2.x" : "2.6",
-	"Zenoss Resource Manager 4.1.x" : "2.7",
-	"Zenoss Core 4.2.x" : "2.7"
-}
+import codecs
 
 def updateZpDefs(url="http://wiki.zenoss.org/Special:ViewXML?title=Special%3AViewXML&namespaces%5B500%5D=on&simplified_format=on"):
 	# Update ZenPack definition XML file from wiki, update our internal xmlroot variable with new data as well.
 	global xmlroot
-	a = urllib.urlopen(url)
+	req = urllib.urlopen(url)
+	encoding=req.headers['content-type'].split('charset=')[-1]
+	ucontent=unicode(req.read(),encoding)
 	l = open(zpdefs, 'w')
-	i = a.read()
-	xmlroot = etree.fromstring(i)
-	l.write(i)
-	a.close()
+	l.write(ucontent.encode('utf-8'))
+	req.close()
 	l.close()
 
 def readZpDefs():
 	# Read in existing XML definition file on disk, use it to generate internal xmlroot variable.
 	global xmlroot
-	l = open(zpdefs, 'r')
+	l = codecs.open(zpdefs, 'r', 'utf-8')
 	xmlroot = etree.parse(l)
 	l.close()
 
@@ -59,6 +48,7 @@ xmlroot = None
 if __name__ == "__main__":
 	sys.stderr.write("Updating XML ZenPack definitions...\n")
 	updateZpDefs()
+	readZpDefs()
 	sys.stderr.write("Done.\n")
 build_set = set()
 aux_data = {}
@@ -99,18 +89,18 @@ for e in xmlroot.iter("Page"):
 	sorted_relkeys = releases.keys()
 	sorted_relkeys.sort(cmp=vercmp)
 
-	# we want to build the most recent release that is compatible with each of our build targets.
-	# This may end up being one version of the ZenPack, or multiple versions.
+	# determine which releases that are compatible with each target version of Zenoss:
 
-	targets = build_targets.copy()
+	targets = {}
+	for zenoss_prod_name in build_targets:
+		targets[zenoss_prod_name] = []
 	target_versions = targets.keys()
-	for r in sorted_relkeys:
+	for version in sorted_relkeys:
 		# start from oldest version...
-		for t in target_versions:
-			if t in releases[r]["compat"]:
+		for zenoss_prod_name in target_versions:
+			if zenoss_prod_name in releases[version]["compat"]:
 				# record that "Zenoss Core 4.2.x" should build release version "r" ("1.0", for example)
-				targets[t] = r
-		# keep iterating thru newer versions to see if we have a newer release that will work on each version:
+				targets[zenoss_prod_name].append(version)
 
 	# Now, we will create a build set. A build set consists of a tuple containing the release version, the target
 	# python version, and the name of the ZenPack. This tuple represents a uniquely-identifiable build that will
@@ -118,22 +108,18 @@ for e in xmlroot.iter("Page"):
 
 	# We will also add some additional build-related data to the aux_data dictionary, indexed by ZenPack name.
 	# This information is necessary for building, but is not unique to each
-
-	for t in target_versions:
-		if targets[t] == None:
-			# no build for this version of Zenoss:
-			continue
-		version = targets[t]
-		if "tag" in releases[version]:
-			tag = releases[version]["tag"]
-		else:
-			tag = None
-		tup = (title, version, python_targets[t])
-		# use the uniqueness of the build tuple to avoid adding duplicate builds to our build set:
-		if tup not in build_set:
-			aud = { "zpname": zpname, "tag" : tag, "src_uri": src_uri }
-			aux_data[title] = aud
-			build_set.add(tup)
+	for zenoss_prod_name in target_versions:
+		for version in targets[zenoss_prod_name]:
+			if "tag" in releases[version]:
+				tag = releases[version]["tag"]
+			else:
+				tag = None
+			tup = (title, version, python_targets[zenoss_prod_name])
+			# use the uniqueness of the build tuple to avoid adding duplicate builds to our build set:
+			if tup not in build_set:
+				aud = { "zpname": zpname, "tag" : tag, "src_uri": src_uri }
+				aux_data[title] = aud
+				build_set.add(tup)
 	
 # Now that we have all our unique builds in build_set and aux_data, output XML describing what to do.
 # I am designing this to output XML so another build tool can take care of building, and all the parsing

@@ -2,11 +2,11 @@
 
 import os
 
-build_targets = {
-	"Zenoss Core 3.2.x" : None,
-	"Zenoss Resource Manager 4.1.x" : None,
-	"Zenoss Core 4.2.x" : None 
-}
+build_targets = ( 
+	"Zenoss Core 3.2.x" ,
+	"Zenoss Resource Manager 4.1.x" ,
+	"Zenoss Core 4.2.x" 
+)
 
 python_targets = {
 	"Zenoss Core 3.2.x" : "2.6",

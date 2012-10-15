@@ -31,7 +31,7 @@ for ld in ( logdir, logdir_succ, logdir_fail ):
 		os.unlink(os.path.join(ld,f))
 required_tags = ( "title", "version", "python_version", "zenpack_name", "tag", "src_uri" )
 
-blog = open(os.path.join(zprepo, "zpbuild.log"),"w")
+blog = open(os.path.join(zprepo, "zpbuild.txt"),"w")
 
 def log(msg):
 	sys.stdout.write(msg)
@@ -51,7 +51,7 @@ for b in xmlroot.iter("build"):
 	pipe = Popen(os.getcwd() + "/build.sh", env=build_env, stderr=STDOUT, stdout=PIPE)
 	output = pipe.communicate()[0]
 	status = pipe.wait()
-	logfn = "{0[ZENPACK_NAME]}-{0[VERSION]}-py{0[PYTHON_VERSION]}".format(build_env)
+	logfn = "{0[ZENPACK_NAME]}-{0[VERSION]}-py{0[PYTHON_VERSION]}.txt".format(build_env)
 	a = open(os.path.join(logdir,logfn),'w')
 	if status == 0:
 		os.symlink("../log/" + logfn, os.path.join(logdir_succ,logfn))
@@ -61,6 +61,7 @@ for b in xmlroot.iter("build"):
 		os.symlink("../log/" + logfn, os.path.join(logdir_fail,logfn))
 		log(": build FAILED\n")
 	elif status == 1:
+		os.symlink("../log/" + logfn, os.path.join(logdir_succ,logfn))
 		build_exist += 1
 		log(": skipped\n")
 	a.write(output)
