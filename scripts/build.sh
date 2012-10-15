@@ -13,10 +13,10 @@ try() {
 	fi
 }
 
-PKGDIR=/var/tmp/zenpack_root/zenpacksk
+PKGDIR=$ZPREPO/zenpacks/
 install -d $PKGDIR
-TMPDIR=/var/tmp/zpbuild/$ZENPACK_NAME
-CLONECACHE=/var/tmp/zpbuild/cloned-repositories/$ZENPACK_NAME
+TMPDIR=$ZPTEMP/build/$ZENPACK_NAME
+CLONECACHE=$ZPTEMP/cloned-repositories/$ZENPACK_NAME
 
 if [ "$SRC_URI" = "" ]; then
 	echo "Missing required variable SRC_URI."

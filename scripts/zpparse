@@ -3,6 +3,7 @@
 import sys, os, string
 import urllib
 from lxml import etree
+from zpbuild_globals import build_targets, python_targets, zpconf, zpdefs, builddefs
 
 build_targets = {
 	"Zenoss Core 3.2.x" : None,
@@ -20,7 +21,7 @@ def updateZpDefs(url="http://wiki.zenoss.org/Special:ViewXML?title=Special%3AVie
 	# Update ZenPack definition XML file from wiki, update our internal xmlroot variable with new data as well.
 	global xmlroot
 	a = urllib.urlopen(url)
-	l = open(os.path.join(zpconf, "zpdefs.xml"), 'w')
+	l = open(zpdefs, 'w')
 	i = a.read()
 	xmlroot = etree.fromstring(i)
 	l.write(i)
@@ -30,7 +31,7 @@ def updateZpDefs(url="http://wiki.zenoss.org/Special:ViewXML?title=Special%3AVie
 def readZpDefs():
 	# Read in existing XML definition file on disk, use it to generate internal xmlroot variable.
 	global xmlroot
-	l = open(os.path.join(zpconf, "zpdefs.xml"), 'r')
+	l = open(zpdefs, 'r')
 	xmlroot = etree.parse(l)
 	l.close()
 
@@ -55,30 +56,10 @@ def vercmp(v1,v2):
 
 xmlroot = None
 
-def setup():
-	# initialize directories:
-	global zphome, zpconf, zpdefs
-	a = os.getenv("ZENHOME")
-	# try to use ZENHOME/etc to store zpdefs.xml; otherwise fall back to /var/tmp/zbuild/etc:
-	if a != None:
-		zphome=a
-	else:
-		zphome="/var/tmp/zpbuild"
-	zpconf=zphome + "/etc"
-	zpdefs=zpconf + "/zpdefs.xml"
-	if not os.path.exists(zpconf):
-		print("Warning: %s does not exist -- creating..." % zpconf)
-		os.makedirs(zpconf)
-
 if __name__ == "__main__":
-	setup()
-	if not os.path.exists(zpconf) or ( len(sys.argv) == 2 and sys.argv[1] == "sync"):
-		sys.stderr.write("Updating XML ZenPack definitions...\n")
-		updateZpDefs()
-		sys.stderr.write("Done.\n")
-		sys.exit(0)
-	else:
-		readZpDefs()
+	sys.stderr.write("Updating XML ZenPack definitions...\n")
+	updateZpDefs()
+	sys.stderr.write("Done.\n")
 build_set = set()
 aux_data = {}
 for e in xmlroot.iter("Page"):
@@ -182,4 +163,6 @@ for build in build_set:
 	else:
 		continue
 	xml_root.append(xml_child)
-print etree.tostring(xml_root, pretty_print=True),
+a = open(builddefs,'w')
+a.write(etree.tostring(xml_root, pretty_print=True))
+a.close()
