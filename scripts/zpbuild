@@ -4,13 +4,10 @@ import sys, os, string
 import urllib
 from lxml import etree
 from subprocess import Popen,PIPE,STDOUT
+from zpbuild_globals import builddefs, zprepo, zptemp
 
-if len(sys.argv) != 2:
-	print("Please specify input file.")
-	sys.exit(1)
-
-if not os.path.exists(sys.argv[1]):
-	print("Cannot find input file.")
+if not os.path.exists(builddefs):
+	print("Cannot find build definition %s." % builddefs)
 	sys.exit(1)
 
 def readBuildDefs(fn):
@@ -19,13 +16,12 @@ def readBuildDefs(fn):
 	l.close()
 	return xmlroot
 
-xmlroot = readBuildDefs(sys.argv[1])
-
+xmlroot = readBuildDefs(builddefs)
 build_count = 0
 build_fail = 0
 build_exist = 0
 
-logdir="/var/tmp/zenpack_root/log"
+logdir=os.path.join(zprepo,"log")
 logdir_succ = logdir + "_succ"
 logdir_fail = logdir + "_fail"
 for ld in ( logdir, logdir_succ, logdir_fail ):
@@ -34,30 +30,43 @@ for ld in ( logdir, logdir_succ, logdir_fail ):
 	for f in os.listdir(ld):
 		os.unlink(os.path.join(ld,f))
 required_tags = ( "title", "version", "python_version", "zenpack_name", "tag", "src_uri" )
+
+blog = open(os.path.join(zprepo, "zpbuild.txt"),"w")
+
+def log(msg):
+	sys.stdout.write(msg)
+	blog.write(msg)
+
 for b in xmlroot.iter("build"):
-	build_env = { "PATH" : os.environ["PATH"] }
+	build_env = { "ZPREPO" : zprepo, "ZPTEMP" : zptemp, "PATH" : os.environ["PATH"] }
 	for el in required_tags:
 		xml_el = b.xpath(el)
 		if len(xml_el) > 0:
 			build_env[el.upper()] = xml_el[0].text
 		else:
-			print("Build definition missing required XML element \"{0}\":".format(el))
-			print etree.tostring(b, pretty_print=True)
+			log("Build definition missing required XML element \"{0}\":\n".format(el))
+			log(etree.tostring(b, pretty_print=True))
 			continue
+	log("Processing %s version %s for Python %s (%s)..." % ( build_env["TITLE"], build_env["VERSION"], build_env["PYTHON_VERSION"], build_env["ZENPACK_NAME"] ))
 	pipe = Popen(os.getcwd() + "/build.sh", env=build_env, stderr=STDOUT, stdout=PIPE)
 	output = pipe.communicate()[0]
 	status = pipe.wait()
-	logfn = "{0[ZENPACK_NAME]}-{0[VERSION]}-py{0[PYTHON_VERSION]}".format(build_env)
+	logfn = "{0[ZENPACK_NAME]}-{0[VERSION]}-py{0[PYTHON_VERSION]}.txt".format(build_env)
 	a = open(os.path.join(logdir,logfn),'w')
 	if status == 0:
 		os.symlink("../log/" + logfn, os.path.join(logdir_succ,logfn))
+		log(": build OK\n")
 	elif status == 2:
 		build_fail += 1
 		os.symlink("../log/" + logfn, os.path.join(logdir_fail,logfn))
+		log(": build FAILED\n")
 	elif status == 1:
+		os.symlink("../log/" + logfn, os.path.join(logdir_succ,logfn))
 		build_exist += 1
+		log(": skipped\n")
 	a.write(output)
 	a.close()
 	build_count += 1
 
-print("%s builds completed. %s failed. %s skipped (already existed)." % (build_count, build_fail, build_exist))
+log("%s builds completed. %s failed. %s skipped (already existed).\n" % (build_count, build_fail, build_exist))
+blog.close()
