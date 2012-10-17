@@ -55,13 +55,13 @@ prep_sources() {
 	cd $S || die "Couldn't change into source directory"
 	git checkout -q $TAG || die "Couldn't checkout specified tag: $TAG"
 	echo "At tag $TAG"
+	# clean-up for repos with naughty things committed:
+	rm -rf dist build
 }
 
 build_zenpack() {
 	echo "Starting build of $ZENPACK_NAME ($TITLE) version $VERSION for Python version $PYTHON_VERSION"
 	echo
-	# clean-up for repos with naughty things committed:
-	rm -rf dist build
 	# use a sanitized name rather than our ugly old namespace name:
 	OUTFILE=$PKGDIR/$ZENPACK_NAME/$ZENPACK_NAME-$VERSION-py$PYTHON_VERSION.egg
 	install -d "$(dirname $OUTFILE)"
