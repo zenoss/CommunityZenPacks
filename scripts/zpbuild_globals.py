@@ -17,7 +17,8 @@ python_targets = {
 zprepo = os.path.join(os.path.expanduser("~"), "zprepo")
 zptemp = "/var/tmp/zpbuild"
 zpconf = zptemp + "/etc"
-zpdefs = zpconf + "/zpdefs.xml"
+zpdefs = zpconf + "/zpdefs.json"
+reldefs = zpconf + "/reldefs.json"
 builddefs = zpconf + "/builddefs.xml"
 if not os.path.exists(zpconf):
 	os.makedirs(zpconf)
