@@ -12,7 +12,7 @@ rel_json = None
 zp_pydict = {}
 rel_pydict = {}
 
-def updateZpDefs(url="http://wiki.zenoss.org/Special:Ask/-5B-5BCategory:ZenPacks-5D-5D/-3FZenPack-20name/-3FSource-20URI/-3FDescription/format%3Djson/offset%3D0&action=purge"):
+def updateZpDefs(url="http://wiki.zenoss.org/Special:Ask/-5B-5BCategory:ZenPacks-5D-5D/-3FZenPack-20name/-3FSource-20URI/-3FDescription/format%3Djson/limit%3D99999/offset%3D0"):
 	# Update ZenPack definition JSON file from wiki, update our internal xmlroot variable with new data as well.
 	req = urllib.urlopen(url)
 	encoding=req.headers['content-type'].split('charset=')[-1]
@@ -22,7 +22,7 @@ def updateZpDefs(url="http://wiki.zenoss.org/Special:Ask/-5B-5BCategory:ZenPacks
 	req.close()
 	l.close()
 
-def updateRelDefs(url="http://wiki.zenoss.org/Special:Ask/-5B-5BRelease-20of::%2B-5D-5D/-3FRelease-20of%3DZenPack/-3FVersion/-3FTag/-3FCompatible-20with/-3FRequires/format%3Djson/mainlabel%3D-2D/offset%3D0&action=purge"):
+def updateRelDefs(url="http://wiki.zenoss.org/Special:Ask/-5B-5BRelease-20of::%2B-5D-5D/-3FRelease-20of%3DZenPack/-3FVersion/-3FTag/-3FCompatible-20with/-3FRequires/format%3Djson/limit%3D99999/mainlabel%3D-2D/offset%3D0"):
 	# Update ZenPack definition JSON file from wiki, update our internal xmlroot variable with new data as well.
 	req = urllib.urlopen(url)
 	encoding=req.headers['content-type'].split('charset=')[-1]
