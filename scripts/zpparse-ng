@@ -14,7 +14,10 @@ rel_pydict = {}
 
 zpdef_url="http://wiki.zenoss.org/Special:Ask/-5B-5BCategory:ZenPacks-5D-5D-20-5B-5BFlavor::free-5D-5D/-3F-23-2D/-3FOrganization/-3FAuthor/-3FMaintainer/-3FSummary/-3FCategories/-3FSource-20URI/-3FLicense/format%3Djson/offset%3D0"
 
+reldef_url="http://wiki.zenoss.org/Special:Ask/-5B-5BRelease-20of::%2B-5D-5D/-3FRelease-20of%3DZenPack/-3FVersion/-3FTag/-3FCompatible-20with/-3FIncompatible-20with/--3FRequires/format%3Djson/limit%3D99999/mainlabel%3D-2D/offset%3D0"
+
 def updateDefs(url, outfile):
+	""" given a URL, read JSON and write it out to a file on disk."""
 	# Update ZenPack definition JSON file from wiki, update our internal xmlroot variable with new data as well.
 	req = urllib.urlopen(url)
 	encoding=req.headers['content-type'].split('charset=')[-1]
@@ -24,15 +27,20 @@ def updateDefs(url, outfile):
 	req.close()
 	l.close()
 
-def parseDefs(json_fn):
+def parseDefs(json_fn, altkey=None):
+	"""Given a filename, read JSON in, and parse it from Semantic Mediawiki output format into a much simpler nested dictionary format.
+	
+	Optional value alkey allows you to specify a property name to use to source the key rather than the default.
+	"""
 	l = codecs.open(json_fn, 'r', 'utf-8')
 	my_json = json.load(l)
 	l.close()
 	simple_dict = {}
 	# key will be the name of each object exported in the JSON:
 	for key in my_json["results"]:
-		simple_dict[key] = {}
-		# elkey is now the name of each property:
+		# props will store all the property key/value pairs for the object we are processing:
+		props = {}
+		# elkey contains the property key name:
 		for elkey in my_json["results"][key]["printouts"]:
 			# blob can be a list of dicts, or strings. Handle carefully to get property values: 
 			blob = my_json["results"][key]["printouts"][elkey]
@@ -49,19 +57,30 @@ def parseDefs(json_fn):
 			else:
 				# we will assume that we have strings or numbers, so just append them directly:
 				outval = blob
-			if type(outval) == type([]):
-				new_outval = outval[0]
-				if len(outval) > 1:
-					for l in outval[1:]:
-						new_outval + ", " + l
-				outval = new_outval
-			simple_dict[key][elkey] = outval
+			# if things are in lists, but only have one item, remove the outer list. Otherwise preserve it:
+			# (This happens when we have multi-select, like when you can specify multiple authors, but specify only one...)
+			if type(outval) == type([]) and len(outval) == 1:
+				outval = outval[0]
+			props[elkey] = outval
+		if altkey and altkey in props:
+			# alternate key specified. Grab from the property:
+			key = props[altkey]
+			if type(key) == type([]):
+				# have a list -- so grab the first item to be the key
+				key = key[0]
+			# now delete original property:
+			del props[altkey]
+		simple_dict[key] = props
+	# the output format is simple_dict["MyObject"]["myproperty"] = myvalue.
+	# myvalue can be None, if not specified, a single value, like a string, or a list of things, like a list of strings, if multiple values were specified.
 	return simple_dict
 
 if __name__ == "__main__":
 	#sys.stderr.write("Updating JSON ZenPack definitions...\n")
 	updateDefs(zpdef_url, zpdef_file)
 	zpdefs = parseDefs(zpdef_file)
-	print zpdefs
+	updateDefs(reldef_url, reldef_file)
+	reldefs = parseDefs(reldef_file, altkey="ZenPack")
+	print zpdefs, reldefs
 	#sys.stderr.write("Done.\n")
 
