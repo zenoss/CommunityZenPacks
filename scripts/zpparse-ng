@@ -1,0 +1,67 @@
+#!/usr/bin/env python2
+
+import sys, os, string
+import urllib
+from lxml import etree
+from zpbuild_globals_ng import build_targets, python_targets, zpconf, zpdef_file, reldef_file, builddefs
+import codecs
+import json
+
+zp_json = None
+rel_json = None
+zp_pydict = {}
+rel_pydict = {}
+
+zpdef_url="http://wiki.zenoss.org/Special:Ask/-5B-5BCategory:ZenPacks-5D-5D-20-5B-5BFlavor::free-5D-5D/-3F-23-2D/-3FOrganization/-3FAuthor/-3FMaintainer/-3FSummary/-3FCategories/-3FSource-20URI/-3FLicense/format%3Djson/offset%3D0"
+
+def updateDefs(url, outfile):
+	# Update ZenPack definition JSON file from wiki, update our internal xmlroot variable with new data as well.
+	req = urllib.urlopen(url)
+	encoding=req.headers['content-type'].split('charset=')[-1]
+	ucontent=unicode(req.read(),encoding)
+	l = open(outfile, 'w')
+	l.write(ucontent.encode('utf-8'))
+	req.close()
+	l.close()
+
+def parseDefs(json_fn):
+	l = codecs.open(json_fn, 'r', 'utf-8')
+	my_json = json.load(l)
+	l.close()
+	simple_dict = {}
+	# key will be the name of each object exported in the JSON:
+	for key in my_json["results"]:
+		simple_dict[key] = {}
+		# elkey is now the name of each property:
+		for elkey in my_json["results"][key]["printouts"]:
+			# blob can be a list of dicts, or strings. Handle carefully to get property values: 
+			blob = my_json["results"][key]["printouts"][elkey]
+			# update our simple dictionary with the property and value, or None
+			# outval will be the value we write to simple_dict[key][elkey]:
+			if not len(blob):
+				# blob is empty, property value was not defined:
+				outval = None
+			elif type(blob[0]) == type({}):
+				# blob contains dicts, grab "fulltext" from each dict, add to list:
+				outval = []
+				for d in blob:
+					outval.append(d["fulltext"])
+			else:
+				# we will assume that we have strings or numbers, so just append them directly:
+				outval = blob
+			if type(outval) == type([]):
+				new_outval = outval[0]
+				if len(outval) > 1:
+					for l in outval[1:]:
+						new_outval + ", " + l
+				outval = new_outval
+			simple_dict[key][elkey] = outval
+	return simple_dict
+
+if __name__ == "__main__":
+	#sys.stderr.write("Updating JSON ZenPack definitions...\n")
+	updateDefs(zpdef_url, zpdef_file)
+	zpdefs = parseDefs(zpdef_file)
+	print zpdefs
+	#sys.stderr.write("Done.\n")
+
