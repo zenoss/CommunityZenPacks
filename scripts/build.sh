@@ -63,7 +63,8 @@ build_zenpack() {
 	echo "Starting build of $TITLE version $VERSION for Python version $PYTHON_VERSION"
 	echo
 	# use a sanitized name rather than our ugly old namespace name:
-	OUTFILE=$PKGDIR/$ZENPACK_PY_NAME/$ZENPACK_PY_NAME-$VERSION-py$PYTHON_VERSION.egg
+	BASE_OUTFILE=$ZENPACK_PY_NAME-$VERSION.egg
+	OUTFILE=$PKGDIR/$ZENPACK_PY_NAME/$VERSION/$BASE_OUTFILE
 	install -d "$(dirname $OUTFILE)"
 	if [ -e $OUTFILE ]; then
 		echo "$OUTFILE already exists, skipping build."
@@ -82,7 +83,15 @@ build_zenpack() {
 	artifact="$(ls dist/*.egg)"
 	if [ -e "$artifact" ]; then
 		echo "Found artifact $artifact"
-		cp $artifact $OUTFILE
+		cd $(dirname $artifact)
+		install -d universal_pack
+		cd universal_pack || die
+		unzip -o ../$(basename $artifact) || die "unzip fail"
+		echo "Cleaning .pyc and .pyo files from pack..."
+		find -iname '*.pyc' -exec rm -f {} \;
+		find -iname '*.pyo' -exec rm -f {} \;
+		zip -r ../$BASE_OUTFILE . || die "zip fail"
+		cp ../$BASE_OUTFILE $OUTFILE
 		echo "Successfully built $OUTFILE."
 	else
 		pwd
