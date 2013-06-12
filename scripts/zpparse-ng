@@ -12,7 +12,7 @@ rel_json = None
 zp_pydict = {}
 rel_pydict = {}
 
-zpdef_url="http://wiki.zenoss.org/Special:Ask/-5B-5BCategory:ZenPacks-5D-5D-20-5B-5BFlavor::free-5D-5D/-3F-23-2D/-3FOrganization/-3FAuthor/-3FMaintainer/-3FSummary/-3FCategories/-3FSource-20URI/-3FLicense/format%3Djson/offset%3D0"
+zpdef_url="http://wiki.zenoss.org/Special:Ask/-5B-5BCategory:ZenPacks-5D-5D-20-5B-5BFlavor::free-5D-5D/-3F-23-2D/-3FOrganization/-3FAuthor/-3FMaintainer/-3FSummary/-3FCategories/-3FSource-20URI/-3FLicense/format%3Djson/limit%3D99999/offset%3D0"
 
 reldef_url="http://wiki.zenoss.org/Special:Ask/-5B-5BRelease-20of::%2B-5D-5D/-3FRelease-20of%3DZenPack/-3FVersion/-3FTag/-3FCompatible-20with/-3FIncompatible-20with/--3FRequires/format%3Djson/limit%3D99999/mainlabel%3D-2D/offset%3D0"
 

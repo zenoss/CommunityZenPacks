@@ -13,10 +13,7 @@ try() {
 	fi
 }
 
-PKGDIR=$ZPREPO/zenpacks/
 install -d $PKGDIR
-TMPDIR=$ZPTEMP/build/$ZENPACK_PY_NAME
-CLONECACHE=$ZPTEMP/cloned-repositories/$ZENPACK_PY_NAME
 
 if [ "$SRC_URI" = "" ]; then
 	echo "Missing required variable SRC_URI."
@@ -63,8 +60,6 @@ build_zenpack() {
 	echo "Starting build of $TITLE version $VERSION for Python version $PYTHON_VERSION"
 	echo
 	# use a sanitized name rather than our ugly old namespace name:
-	BASE_OUTFILE=$ZENPACK_PY_NAME-$VERSION.egg
-	OUTFILE=$PKGDIR/$ZENPACK_PY_NAME/$VERSION/$BASE_OUTFILE
 	install -d "$(dirname $OUTFILE)"
 	if [ -e $OUTFILE ]; then
 		echo "$OUTFILE already exists, skipping build."
