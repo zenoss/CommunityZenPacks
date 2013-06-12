@@ -2,21 +2,20 @@
 
 import sys, os, string
 import urllib
-from lxml import etree
 from subprocess import Popen,PIPE,STDOUT
 from zpbuild_globals_ng import builddefs, zprepo, zptemp
+import codecs, json
 
 if not os.path.exists(builddefs):
 	print("Cannot find build definition %s." % builddefs)
 	sys.exit(1)
 
-def readBuildDefs(fn):
-	l = open(fn, 'r')
-	xmlroot = etree.parse(l)
+def readBuildDefs(json_fn=builddefs):
+	l = codecs.open(json_fn, 'r', 'utf-8')
+	my_json = json.load(l)
 	l.close()
-	return xmlroot
+	return my_json
 
-xmlroot = readBuildDefs(builddefs)
 build_count = 0
 build_fail = 0
 build_exist = 0
@@ -29,36 +28,37 @@ for ld in ( logdir, logdir_succ, logdir_fail ):
 		os.makedirs(ld)
 	for f in os.listdir(ld):
 		os.unlink(os.path.join(ld,f))
-required_tags = ( "title", "version", "python_version", "zenpack_name", "tag", "src_uri" )
-
-#blog = open(os.path.join(zprepo, "zpbuild.txt"),"w")
 
 def log(msg):
-	sys.stdout.write(msg)
+	sys.stdout.write(msg+"\n")
 	#blog.write(msg)
 
-for b in xmlroot.iter("build"):
-	build_env = { "ZPREPO" : zprepo, "ZPTEMP" : zptemp, "PATH" : os.environ["PATH"] }
-	valid = True
-	for el in required_tags:
-		xml_el = b.xpath(el)
-		if len(xml_el) > 0:
-			build_env[el.upper()] = xml_el[0].text
-		else:
-			log("Build definition missing required XML element \"{0}\":\n".format(el))
-			log(etree.tostring(b, pretty_print=True))
-			valid = False
-			break
-	if not valid:
-		continue
-	log("Processing %s version %s for Python %s (%s)..." % ( build_env["TITLE"], build_env["VERSION"], build_env["PYTHON_VERSION"], build_env["ZENPACK_NAME"] ))
+def buildPack(zpname, zenpack_json, rel_version):
+	global build_count, build_fail, build_exist
+	# get python name from name of repo:
+	pyname = zenpack_json["Source URI"]
+	if pyname[-4:] == ".git":
+		pyname = pyname[:-4]
+	pyname = pyname.split("/")[-1]
+	# environment variables passed to build script:
+	build_env = { 
+		"PYTHON_VERSION" : python_version,
+		"ZENPACK_PY_NAME" : pyname,
+		"TITLE": zpname, 
+		"VERSION" : rel_version, 
+		"TAG": zenpack_json["Releases"][rel_version]["Tag"], 
+		"SRC_URI" : zenpack_json["Source URI"],
+		"ZPREPO" : zprepo, 
+		"ZPTEMP" : zptemp, 
+		"PATH" : os.environ["PATH"] 
+	}
 	pipe = Popen(os.getcwd() + "/build.sh", env=build_env, stderr=STDOUT, stdout=PIPE)
 	output = pipe.communicate()[0]
 	status = pipe.wait()
-	logfn = "{0[ZENPACK_NAME]}-{0[VERSION]}-py{0[PYTHON_VERSION]}.txt".format(build_env)
+	logfn = "{0[ZENPACK_PY_NAME]}-{0[VERSION]}.txt".format(build_env)
 	if os.path.exists(os.path.join(logdir,logfn)):
 		log("\nError: Log for %s already exists -- indicates duplicate build entry or wrong/duplicate ZenPack name\n" % logfn)
-		continue
+		return
 	a = open(os.path.join(logdir,logfn),'w')
 	if status == 0:
 		os.symlink("../log/" + logfn, os.path.join(logdir_succ,logfn))
@@ -75,5 +75,15 @@ for b in xmlroot.iter("build"):
 	a.close()
 	build_count += 1
 
+zenpacks = readBuildDefs()
+python_version="2.7"
+for zp_name in zenpacks:
+	if not "Releases" in zenpacks[zp_name]:
+		log("No releases for %s" % zp_name)
+		continue
+	for rel_version in zenpacks[zp_name]["Releases"]:
+		rel_info = zenpacks[zp_name]["Releases"][rel_version]
+		log("Processing %s version %s (building with python %s)..." % ( zp_name, rel_info["Version"], python_version ))
+		buildPack(zp_name, zenpacks[zp_name], rel_version)
 log("%s builds completed. %s failed. %s skipped (already existed).\n" % (build_count, build_fail, build_exist))
 #blog.close()

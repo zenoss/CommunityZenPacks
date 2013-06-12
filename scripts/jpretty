@@ -1,0 +1,12 @@
+#!/usr/bin/python2
+
+# Simple JSON pretty-printer
+
+import sys, json
+
+for fn in sys.argv[1:]:
+	f = open(fn,"r")
+	j = json.load(f)
+	f.close()
+	print json.dumps(j, sort_keys=True, indent=4, separators=(',',': '))
+

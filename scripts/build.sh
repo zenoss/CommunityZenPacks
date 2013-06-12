@@ -15,8 +15,8 @@ try() {
 
 PKGDIR=$ZPREPO/zenpacks/
 install -d $PKGDIR
-TMPDIR=$ZPTEMP/build/$ZENPACK_NAME
-CLONECACHE=$ZPTEMP/cloned-repositories/$ZENPACK_NAME
+TMPDIR=$ZPTEMP/build/$ZENPACK_PY_NAME
+CLONECACHE=$ZPTEMP/cloned-repositories/$ZENPACK_PY_NAME
 
 if [ "$SRC_URI" = "" ]; then
 	echo "Missing required variable SRC_URI."
@@ -49,7 +49,7 @@ prep_sources() {
 		cd $CLONECACHE || die
 		try git fetch
 	fi
-	S=$TMPDIR/$ZENPACK_NAME
+	S=$TMPDIR/$ZENPACK_PY_NAME
 	cd $TMPDIR || die "Couldn't change into TMPDIR" 
 	cp -a $CLONECACHE . || die "Couldn't copy from clone cache"
 	cd $S || die "Couldn't change into source directory"
@@ -60,10 +60,10 @@ prep_sources() {
 }
 
 build_zenpack() {
-	echo "Starting build of $ZENPACK_NAME ($TITLE) version $VERSION for Python version $PYTHON_VERSION"
+	echo "Starting build of $TITLE version $VERSION for Python version $PYTHON_VERSION"
 	echo
 	# use a sanitized name rather than our ugly old namespace name:
-	OUTFILE=$PKGDIR/$ZENPACK_NAME/$ZENPACK_NAME-$VERSION-py$PYTHON_VERSION.egg
+	OUTFILE=$PKGDIR/$ZENPACK_PY_NAME/$ZENPACK_PY_NAME-$VERSION-py$PYTHON_VERSION.egg
 	install -d "$(dirname $OUTFILE)"
 	if [ -e $OUTFILE ]; then
 		echo "$OUTFILE already exists, skipping build."

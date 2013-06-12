@@ -14,11 +14,11 @@ python_targets = {
 	"Zenoss Core 4.2.x" : "2.7"
 }
 
-zprepo = os.path.join(os.path.expanduser("~"), "zprepo")
+zprepo = os.path.join(os.path.expanduser("~"), "zprepo-ng")
 zptemp = "/var/tmp/zpbuild-ng"
 zpconf = zptemp + "/etc"
 zpdef_file = zpconf + "/zpdefs.json"
 reldef_file = zpconf + "/reldefs.json"
-builddefs = zpconf + "/builddefs.xml"
+builddefs = zpconf + "/builddefs.json"
 if not os.path.exists(zpconf):
 	os.makedirs(zpconf)
