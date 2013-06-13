@@ -4,7 +4,8 @@ import sys, os, string
 import urllib
 from lxml import etree
 from subprocess import Popen,PIPE,STDOUT
-from zpbuild_globals import builddefs, zprepo, zptemp
+from zpbuild_globals import builddefs, zprepo, zptemp, zpkeep
+import shutil
 
 if not os.path.exists(builddefs):
 	print("Cannot find build definition %s." % builddefs)
@@ -16,6 +17,7 @@ def readBuildDefs(fn):
 	l.close()
 	return xmlroot
 
+shutil.rmtree(zpkeep)
 xmlroot = readBuildDefs(builddefs)
 build_count = 0
 build_fail = 0

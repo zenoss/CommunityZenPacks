@@ -3,8 +3,8 @@
 import sys, os, string
 import urllib
 from subprocess import Popen,PIPE,STDOUT
-from zpbuild_globals_ng import builddefs, zprepo, zptemp
-import codecs, json
+from zpbuild_globals_ng import builddefs, zprepo, zptemp, zpkeep
+import codecs, json, shutil, pkg_resources
 
 if not os.path.exists(builddefs):
 	print("Cannot find build definition %s." % builddefs)
@@ -20,6 +20,8 @@ build_count = 0
 build_fail = 0
 build_exist = 0
 
+if os.path.exists(zpkeep):
+	shutil.rmtree(zpkeep)
 logdir=os.path.join(zprepo,"log")
 logdir_succ = logdir + "_succ"
 logdir_fail = logdir + "_fail"
@@ -35,21 +37,17 @@ def log(msg):
 
 def buildPack(zpname, zenpack_json, rel_version):
 	global build_count, build_fail, build_exist
-	# get python name from name of repo:
-	pyname = zenpack_json["Source URI"]
-	if pyname[-4:] == ".git":
-		pyname = pyname[:-4]
-	pyname = pyname.split("/")[-1]
 	# environment variables passed to build script:
+	pyname = zenpack_json["Python name"]
 	build_env = { 
 		"PATH" : os.environ["PATH"],
 		"ZPTEMP" : zptemp, 
 		"ZPREPO" : zprepo, 
 		"PKGDIR" : zprepo + "/zenpacks/" + pyname + "/" + rel_version,
+		"KEEPDIR" : zpkeep + "/" + pyname + "-" + rel_version,
 		"TMPDIR" : zptemp + "/build/" + pyname + "/" + rel_version,
 		"CLONECACHE" : zptemp + "/cloned-repositories/" + pyname,
 		"BASE_OUTFILE" : pyname+"-"+rel_version+".egg",
-		"BASE_JSONFILE" : pyname+"-"+rel_version+".json",
 		"PYTHON_VERSION" : python_version,
 		"ZENPACK_PY_NAME" : pyname,
 		"TITLE": zpname, 
@@ -58,7 +56,6 @@ def buildPack(zpname, zenpack_json, rel_version):
 		"SRC_URI" : zenpack_json["Source URI"]
 	}
 	build_env["OUTFILE"] = build_env["PKGDIR"] + "/" + build_env["BASE_OUTFILE"]
-	build_env["JSONFILE"] = build_env["PKGDIR"] + "/" + build_env["BASE_JSONFILE"]
 	pipe = Popen(os.getcwd() + "/build.sh", env=build_env, stderr=STDOUT, stdout=PIPE)
 	output = pipe.communicate()[0]
 	status = pipe.wait()
@@ -80,16 +77,42 @@ def buildPack(zpname, zenpack_json, rel_version):
 		log(": skipped\n")
 	a.write(output)
 	a.close()
+	# grab deps from egg, add them to our python-ized JSON to be output later:
+	zenpack_json["Releases"][rel_version]["Requires"] = []
+	if os.path.exists(build_env["KEEPDIR"] + "/requires.txt"):
+		log("Parsing dependencies for %s-%s..." % ( zpname, rel_version )) 
+		r = open(build_env["KEEPDIR"] + "/requires.txt", 'r')
+		# parse setuptools version strings and convert to a good format for the wiki, and humanity:
+		# { "ZenPack" : "ZenPacks.zenoss.foo", "Version" : [ ">= 1.0", "<= 3.0" ]
+		deps = []
+		for x in pkg_resources.parse_requirements(r.readlines()):
+			d = { "ZenPack" : x.project_name }
+			v = []
+			for y in x.specs:
+				v.append(" ".join(y))
+			if v != []:
+				d["Version"] = v
+			deps.append(d)
+		zenpack_json["Releases"][rel_version]["Requires"] = deps
+		r.close()
 	# write out JSON that can be imported by the wiki:
-	log("Writing out JSON to %s..." % build_env["JSONFILE"])
-	a = open(build_env["JSONFILE"], 'w')
-	json.dump(zenpack_json, a, sort_keys=True, indent=4, separators=(',',": "))
-	a.close()
 	build_count += 1
 
 zenpacks = readBuildDefs()
 python_version="2.7"
 for zp_name in zenpacks:
+	# get python name from name of repo:
+	pyname = zenpacks[zp_name]["Source URI"]
+	if pyname == None:
+		log("ZenPack %s has no Source URI, skipping..." % zp_name)
+		continue
+	print zenpacks[zp_name]
+	if pyname[-4:] == ".git":
+		pyname = pyname[:-4]
+	pyname = pyname.split("/")[-1]
+	zenpacks[zp_name]["Python name"] = pyname
+	# remove namespace prefix from real-world ZenPack name:
+	zenpacks[zp_name]["Name"] = ":".join(zp_name.split(":")[1:])
 	if not "Releases" in zenpacks[zp_name]:
 		log("No releases for %s" % zp_name)
 		continue
@@ -97,5 +120,12 @@ for zp_name in zenpacks:
 		rel_info = zenpacks[zp_name]["Releases"][rel_version]
 		log("Processing %s version %s (building with python %s)..." % ( zp_name, rel_info["Version"], python_version ))
 		buildPack(zp_name, zenpacks[zp_name], rel_version)
+	# now write out global JSON, one file for each ZenPack, containing info for ZenPack and all releases:
+	base_jsonfile = "zenpack.json"
+	jsonfile = zprepo + "/zenpacks/" + pyname + "/" + base_jsonfile
+	log("Writing out JSON to %s..." % jsonfile )
+	a = open(jsonfile, 'w')
+	json.dump(zenpacks[zp_name], a, sort_keys=True, indent=4, separators=(',',": "))
+	a.close()
 log("%s builds completed. %s failed. %s skipped (already existed).\n" % (build_count, build_fail, build_exist))
 #blog.close()

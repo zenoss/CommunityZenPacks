@@ -16,6 +16,7 @@ python_targets = {
 
 zprepo = os.path.join(os.path.expanduser("~"), "zprepo-ng")
 zptemp = "/var/tmp/zpbuild-ng"
+zpkeep = "/var/tmp/zpkeep-ng"
 zpconf = zptemp + "/etc"
 zpdef_file = zpconf + "/zpdefs.json"
 reldef_file = zpconf + "/reldefs.json"

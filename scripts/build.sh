@@ -85,6 +85,10 @@ build_zenpack() {
 		echo "Cleaning .pyc and .pyo files from pack..."
 		find -iname '*.pyc' -exec rm -f {} \;
 		find -iname '*.pyo' -exec rm -f {} \;
+		install -d $KEEPDIR
+		if [ -e EGG-INFO/requires.txt ]; then
+			cp EGG-INFO/requires.txt $KEEPDIR/ || die
+		fi
 		zip -r ../$BASE_OUTFILE . || die "zip fail"
 		cp ../$BASE_OUTFILE $OUTFILE
 		echo "Successfully built $OUTFILE."
