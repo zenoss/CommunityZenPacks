@@ -95,7 +95,12 @@ def buildPack(zpname, zenpack_json, rel_version):
 			deps.append(d)
 		zenpack_json["Releases"][rel_version]["Requires"] = deps
 		r.close()
-	# write out JSON that can be imported by the wiki:
+	# write out JSON that can be imported by the wiki - this is JSON for this release only.
+	jsonfile = build_env["PKGDIR"] + "/release.json"
+	log("Writing out JSON to %s..." % jsonfile )
+	a = open(jsonfile, 'w')
+	json.dump(zenpack_json["Releases"][rel_version], a, sort_keys=True, indent=4, separators=(',',": "))
+	a.close()
 	build_count += 1
 
 zenpacks = readBuildDefs()
@@ -118,7 +123,13 @@ for zp_name in zenpacks:
 		continue
 	for rel_version in zenpacks[zp_name]["Releases"]:
 		rel_info = zenpacks[zp_name]["Releases"][rel_version]
-		log("Processing %s version %s (building with python %s)..." % ( zp_name, rel_info["Version"], python_version ))
+		if "ZenPack" in rel_info:
+			# delete redundant info in JSON, no need to repeat ourselves:
+			del rel_info["ZenPack"]
+		if "Version" in rel_info:
+			# delete redundant info in JSON, no need to repeat ourselves. Want clean output.
+			del rel_info["Version"]
+		log("Processing %s version %s (building with python %s)..." % ( zp_name, rel_version, python_version ))
 		buildPack(zp_name, zenpacks[zp_name], rel_version)
 	# now write out global JSON, one file for each ZenPack, containing info for ZenPack and all releases:
 	base_jsonfile = "zenpack.json"

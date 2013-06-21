@@ -67,6 +67,9 @@ def parseDefs(json_fn, altkeys=None):
 			if type(outval) == type([]) and len(outval) == 1:
 				outval = outval[0]
 			props[elkey] = outval
+		# a heirarchy of keys has been specified, which we will use to grab a value to use as an index for a dict (this is a feature
+		# to get the ZenPack version and use it as a key in our dict...)
+		orig_key = key 
 		if altkeys:
 			# ix will reference the current dict to dump our properties in...
 			ix = simple_dict 
@@ -80,6 +83,14 @@ def parseDefs(json_fn, altkeys=None):
 					raise IndexError
 				if i == len(altkeys) - 1:
 					# end - do assignment
+					if type(key) == type([]):
+						# our key index is a *list* -- this should not happen but appears to happen when there is a ZenPack
+						# that doesn't have an approved version of the page. It's wacky..
+						print("%s may need to be approved via ApprovedRevs on mediawiki. We are getting bogus semantic data for a release." % orig_key)
+						print ("key is %s" % key)
+						print ("altkeys is %s" % altkeys)
+						print ("orig key is %s" % orig_key)
+						raise IndexError
 					ix[key] = props
 				else:
 					# move ix deeper...
