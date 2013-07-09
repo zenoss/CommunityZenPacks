@@ -1,0 +1,88 @@
+import fnmatch, os, re, stat
+from lxml import etree
+
+def locate(path, fnpattern="", ignore=[]):
+	for root, dirnames, filenames in os.walk(path):
+		for filename in fnmatch.filter(filenames, fnpattern):
+			if filename not in ignore:
+				yield os.path.join(root, filename)
+def locate_py(path):
+	return locate(path, fnpattern="*.py", ignore=["__init__.py"])
+
+def locate_zcml(path):
+	return locate(path, fnpattern="*.zcml")
+
+def locate_xml(path):
+	return locate(path, fnpattern="*.xml")
+
+def scanFileForElement(fn, target):
+	a = open(fn,'rb')
+	root = etree.parse(a)
+	a.close()
+	for el in root.iter('{*}%s' % target):
+		yield el 
+
+def scanFileForRegex(fn, expression):
+	a = open(fn, 'r')
+	r = re.compile(expression)
+	found = False
+	for l in a.readlines():
+		if r.match(l):
+			found = True
+			break
+	a.close()
+	return found
+
+class zpComplexity(object):
+
+	def __init__(self, path, zpname):
+		self.path = path
+		self.zpname = zpname
+		self.tags = set()
+		self.zp_path = os.path.join(os.path.normpath(path), os.path.sep.join(zpname.split(".")))
+
+	def sanityCheck(self):
+		if not os.path.exists(self.zp_path):
+			# Couldn't find ZenPack directory - something is wrong
+			return None
+	
+	def BasicConfigTest(self):
+		p = os.path.join(self.zp_path, "objects")
+		if os.path.exists(p):
+			for f in locate_xml(p):
+				for el in scanFileForElement(os.path.join(p,f), "object"):
+					tags.add("BasicConfig")
+					return
+
+	def EventTransformsTest(self):
+		p = os.path.join(self.zp_path, "objects")
+		if os.path.exists(p):
+			for f in locate_xml(p):
+				for el in scanFileForElement(os.path.join(p,f), "object"):
+					if "EventClassInst" in el:
+						for p in el.iter("{*}property"):
+							if "id" in p and p["id"] == "transform":
+								self.tags.add("EventTransforms")
+								return
+	def CommandPluginsTest(self):
+		p = os.path.join(self.zp_path, "objects")
+		if os.path.exists(p):
+			for f in locate_xml(p):
+				for el in scanFileForElement(os.path.join(p,f), "object"):
+					if "class" in el and el["class"] == "BasicDataSource":
+						for p in el.iter("{*}property"):
+							if "id" in p and p["id"] == "sourcetype":
+								if p.text.strip() == "COMMAND":
+									self.tags.add("CommandPlugins")
+									return
+
+	def ScriptsTest(self):
+		p = os.path.join(self.zp_path, "bin")
+		if os.path.exists(p):
+			for x in os.listdir(p):
+				xf = os.path.join(p,x)
+				if os.path.isfile(xf):
+					st = os.stat(xf)
+					if st.st_mode && stat_S_IEXEC:
+						self.tags.add("Scripts")
+						return
