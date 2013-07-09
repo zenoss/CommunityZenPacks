@@ -1,5 +1,7 @@
-import fnmatch, os, re, stat
+import fnmatch, os, re, stat, glob
 from lxml import etree
+
+# These locate* functions are all recursive file-finding functions:
 
 def locate(path, fnpattern="", ignore=[]):
 	for root, dirnames, filenames in os.walk(path):
@@ -86,3 +88,83 @@ class zpComplexity(object):
 					if st.st_mode && stat_S_IEXEC:
 						self.tags.add("Scripts")
 						return
+	
+	def DatasourcesTest(self):
+		p = os.path.join(self.zp_path, "datasources")
+		if os.path.exists(p):
+			for f in glob.glob("%s/*.py" % p):
+				bf = os.path.basename(f)
+				if bf == "__init__.py":
+					continue
+				classname = bf[:-3]
+				if scanFileForRegex(f, "^class %s\(" % classname):
+					self.tags.add("Datasources")
+					return
+
+	def ModelerPluginsTest(self):
+		p = os.path.join(self.zp_path, "modeler/plugins")
+		if os.path.exists(p):
+			for f in locate_py(p):
+				bf = os.path.basename(f)
+				classname = bf[:-3]
+				if scanFileForRegex(f, "^class %s\(" % classname):
+					self.tags.add("ModelerPlugins")
+					return
+	
+	def APIsTest(self):
+		for f in locate_py(self.zp_path):
+			if scanFileForRegex(f, '^class [^\(]+\(.*?ZuulFacade'):
+				self.tags.add("APIs")
+				return
+
+	def CollectorDaemonsTest(self):
+		p = os.path.join(self.zp_path, "daemons")
+		if os.path.exists(p):
+			for x in os.listdir(p):
+				xf = os.path.join(p,x)
+				if os.path.isfile(xf):
+					st = os.stat(xf)
+					if st.st_mode && stat_S_IEXEC:
+						self.tags.add("CollectorDaemons")
+						return
+	
+	def HubServicesTest(self):
+		p = os.path.join(self.zp_path, "services")
+		if os.path.exists(p):
+			for f in glob.glob("%s/*.py" % p):
+				bf = os.path.basename(f)
+				if bf == "__init__.py":
+					continue
+				self.tags.add("HubServices")
+				return
+
+	def ImpactTest(self):
+		my_attrs = [ 
+			"ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider",
+			"ZenPacks.zenoss.Impact.impactd.interfaces.INodeTriggers", 
+			"ZenPacks.zenoss.Impact.stated.interfaces.IStateProvider" 
+		]
+		for f in locate_zcml(self.zp_path):
+			for el in scanFileForElement(f, "subscriber"):
+				if "provides" in el and el["provides"] in my_attrs:
+					self.tags.add("Impact")
+					return
+	def AnalyticsTest(self):
+			"Products.Zuul.interfaces.IReportableFactory",
+			"Products.Zuul.interfaces.IReportable"
+		for f in locate_zcml(self.zp_path):
+			for el in scanFileForElement(f, "subscriber"):
+				if "provides" in el and el["provides"] == "Products.Zuul.interfaces.IReportableFactory":
+					self.tags.add("Impact")
+					return
+			for el in scanFileForElement(f, "adapter"):
+				if "provides" in el and el["provides"] == "Products.Zuul.interfaces.IReportable":
+					self.tags.add("Impact")
+					return
+
+	def UnitTestsTest(self):
+		p = os.path.join(self.zp_path, "tests")
+		if os.path.exists(p):
+			for f in locate_py(p):
+				self.tags.add("UnitTests")
+				return
