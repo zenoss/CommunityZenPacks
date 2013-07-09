@@ -42,6 +42,19 @@ class zpComplexity(object):
 		self.path = path
 		self.zpname = zpname
 		self.tags = set()
+		self.all_tags = set([
+			"BasicConfig",
+			"EventTransforms",
+			"CommandPlugins",
+			"Scripts",
+			"Datasources",
+			"ModelerPlugins",
+			"APIs",
+			"CollectorDaemons",
+			"HubServices",
+			"Impact",
+			"Analytics",
+			"UnitTests"])
 		self.zp_path = os.path.join(os.path.normpath(path), os.path.sep.join(zpname.split(".")))
 
 	def sanityCheck(self):
@@ -62,7 +75,7 @@ class zpComplexity(object):
 		if os.path.exists(p):
 			for f in locate_xml(p):
 				for el in scanFileForElement(f, "object"):
-					if "EventClassInst" in el:
+					if el.get("class") == "EventClassInst":
 						for p in el.iter("{*}property"):
 							if p.get("id") == "transform":
 								self.tags.add("EventTransforms")
@@ -190,3 +203,4 @@ if __name__ == "__main__":
 	zpa = zpComplexity(sys.argv[1], sys.argv[2])
 	zpa.run()
 	print zpa.tags
+	print zpa.all_tags - zpa.tags
