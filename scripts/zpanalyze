@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 import fnmatch, os, re, stat, glob
 from lxml import etree
 
@@ -48,29 +49,29 @@ class zpComplexity(object):
 			# Couldn't find ZenPack directory - something is wrong
 			return None
 	
-	def BasicConfigTest(self):
+	def basicConfigTest(self):
 		p = os.path.join(self.zp_path, "objects")
 		if os.path.exists(p):
 			for f in locate_xml(p):
-				for el in scanFileForElement(os.path.join(p,f), "object"):
-					tags.add("BasicConfig")
+				for el in scanFileForElement(f, "object"):
+					self.tags.add("BasicConfig")
 					return
 
-	def EventTransformsTest(self):
+	def eventTransformsTest(self):
 		p = os.path.join(self.zp_path, "objects")
 		if os.path.exists(p):
 			for f in locate_xml(p):
-				for el in scanFileForElement(os.path.join(p,f), "object"):
+				for el in scanFileForElement(f, "object"):
 					if "EventClassInst" in el:
 						for p in el.iter("{*}property"):
 							if "id" in p and p["id"] == "transform":
 								self.tags.add("EventTransforms")
 								return
-	def CommandPluginsTest(self):
+	def commandPluginsTest(self):
 		p = os.path.join(self.zp_path, "objects")
 		if os.path.exists(p):
 			for f in locate_xml(p):
-				for el in scanFileForElement(os.path.join(p,f), "object"):
+				for el in scanFileForElement(f, "object"):
 					if "class" in el and el["class"] == "BasicDataSource":
 						for p in el.iter("{*}property"):
 							if "id" in p and p["id"] == "sourcetype":
@@ -78,18 +79,18 @@ class zpComplexity(object):
 									self.tags.add("CommandPlugins")
 									return
 
-	def ScriptsTest(self):
+	def scriptsTest(self):
 		p = os.path.join(self.zp_path, "bin")
 		if os.path.exists(p):
 			for x in os.listdir(p):
 				xf = os.path.join(p,x)
 				if os.path.isfile(xf):
 					st = os.stat(xf)
-					if st.st_mode && stat_S_IEXEC:
+					if st.st_mode & stat.S_IEXEC:
 						self.tags.add("Scripts")
 						return
 	
-	def DatasourcesTest(self):
+	def datasourcesTest(self):
 		p = os.path.join(self.zp_path, "datasources")
 		if os.path.exists(p):
 			for f in glob.glob("%s/*.py" % p):
@@ -101,7 +102,7 @@ class zpComplexity(object):
 					self.tags.add("Datasources")
 					return
 
-	def ModelerPluginsTest(self):
+	def modelerPluginsTest(self):
 		p = os.path.join(self.zp_path, "modeler/plugins")
 		if os.path.exists(p):
 			for f in locate_py(p):
@@ -117,18 +118,18 @@ class zpComplexity(object):
 				self.tags.add("APIs")
 				return
 
-	def CollectorDaemonsTest(self):
+	def collectorDaemonsTest(self):
 		p = os.path.join(self.zp_path, "daemons")
 		if os.path.exists(p):
 			for x in os.listdir(p):
 				xf = os.path.join(p,x)
 				if os.path.isfile(xf):
 					st = os.stat(xf)
-					if st.st_mode && stat_S_IEXEC:
+					if st.st_mode & stat.S_IEXEC:
 						self.tags.add("CollectorDaemons")
 						return
 	
-	def HubServicesTest(self):
+	def hubServicesTest(self):
 		p = os.path.join(self.zp_path, "services")
 		if os.path.exists(p):
 			for f in glob.glob("%s/*.py" % p):
@@ -138,7 +139,7 @@ class zpComplexity(object):
 				self.tags.add("HubServices")
 				return
 
-	def ImpactTest(self):
+	def impactTest(self):
 		my_attrs = [ 
 			"ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider",
 			"ZenPacks.zenoss.Impact.impactd.interfaces.INodeTriggers", 
@@ -149,9 +150,7 @@ class zpComplexity(object):
 				if "provides" in el and el["provides"] in my_attrs:
 					self.tags.add("Impact")
 					return
-	def AnalyticsTest(self):
-			"Products.Zuul.interfaces.IReportableFactory",
-			"Products.Zuul.interfaces.IReportable"
+	def analyticsTest(self):
 		for f in locate_zcml(self.zp_path):
 			for el in scanFileForElement(f, "subscriber"):
 				if "provides" in el and el["provides"] == "Products.Zuul.interfaces.IReportableFactory":
@@ -162,9 +161,30 @@ class zpComplexity(object):
 					self.tags.add("Impact")
 					return
 
-	def UnitTestsTest(self):
+	def unitTestsTest(self):
 		p = os.path.join(self.zp_path, "tests")
 		if os.path.exists(p):
 			for f in locate_py(p):
 				self.tags.add("UnitTests")
 				return
+
+	def run(self):
+		self.sanityCheck()
+		self.basicConfigTest()
+		self.eventTransformsTest()
+		self.commandPluginsTest()
+		self.scriptsTest()
+		self.datasourcesTest()
+		self.modelerPluginsTest()
+		self.APIsTest()
+		self.collectorDaemonsTest()
+		self.hubServicesTest()
+		self.impactTest()
+		self.analyticsTest()
+		self.unitTestsTest()
+
+if __name__ == "__main__":
+	import sys
+	zpa = zpComplexity(sys.argv[1], sys.argv[2])
+	zpa.run()
+	print zpa.tags
