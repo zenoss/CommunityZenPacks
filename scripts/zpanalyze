@@ -64,7 +64,7 @@ class zpComplexity(object):
 				for el in scanFileForElement(f, "object"):
 					if "EventClassInst" in el:
 						for p in el.iter("{*}property"):
-							if "id" in p and p["id"] == "transform":
+							if p.get("id") == "transform":
 								self.tags.add("EventTransforms")
 								return
 	def commandPluginsTest(self):
@@ -72,9 +72,9 @@ class zpComplexity(object):
 		if os.path.exists(p):
 			for f in locate_xml(p):
 				for el in scanFileForElement(f, "object"):
-					if "class" in el and el["class"] == "BasicDataSource":
+					if el.get("class")  == "BasicDataSource":
 						for p in el.iter("{*}property"):
-							if "id" in p and p["id"] == "sourcetype":
+							if p.get("id") == "sourcetype":
 								if p.text.strip() == "COMMAND":
 									self.tags.add("CommandPlugins")
 									return
@@ -147,17 +147,17 @@ class zpComplexity(object):
 		]
 		for f in locate_zcml(self.zp_path):
 			for el in scanFileForElement(f, "subscriber"):
-				if "provides" in el and el["provides"] in my_attrs:
+				if el.get("provides") in my_attrs:
 					self.tags.add("Impact")
 					return
 	def analyticsTest(self):
 		for f in locate_zcml(self.zp_path):
 			for el in scanFileForElement(f, "subscriber"):
-				if "provides" in el and el["provides"] == "Products.Zuul.interfaces.IReportableFactory":
+				if el.get("provides") == "Products.Zuul.interfaces.IReportableFactory":
 					self.tags.add("Impact")
 					return
 			for el in scanFileForElement(f, "adapter"):
-				if "provides" in el and el["provides"] == "Products.Zuul.interfaces.IReportable":
+				if el.get("provides") == "Products.Zuul.interfaces.IReportable":
 					self.tags.add("Impact")
 					return
 
@@ -165,6 +165,8 @@ class zpComplexity(object):
 		p = os.path.join(self.zp_path, "tests")
 		if os.path.exists(p):
 			for f in locate_py(p):
+				if os.path.basename(f) == "testExample.py":
+					continue
 				self.tags.add("UnitTests")
 				return
 
