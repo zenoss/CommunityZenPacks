@@ -57,7 +57,30 @@ class zpComplexity(object):
 			"Impact",
 			"Analytics",
 			"UnitTests"])
+		self.complexity_scale = {
+			"BasicConfig" : 1,
+			"EventTransforms" : 2,
+			"CommandPlugins" : 2,
+			"Scripts" : 2,
+			"Datasources" : 3,
+			"ModelerPlugins" : 6,
+			"UI" : 5,
+			"ModelExtensions" : 7,
+			"APIs" : 5,
+			"CollectorDaemons" : 9,
+			"HubServices" : 4,
+			"Impact" : 5,
+			"Analytics" : 4,
+			"UnitTests" : 4
+		}
 		self.zp_path = os.path.join(os.path.normpath(path), os.path.sep.join(zpname.split(".")))
+
+	@property
+	def complexity(self):
+		c = 0
+		for k in self.keys:
+			c += self.complexity_scale[k]
+		return c
 
 	def sanityCheck(self):
 		if not os.path.exists(self.zp_path):

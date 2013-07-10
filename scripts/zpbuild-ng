@@ -102,6 +102,7 @@ def buildPack(zpname, zenpack_json, rel_version):
 	zpa = zpComplexity(os.path.join(build_env["TMPDIR"],pyname) ,pyname)
 	zpa.run()
 	zenpack_json["Releases"][rel_version]["ComplexityTags"] = ",".join(list(zpa.tags))
+	zenpack_json["Releases"][rel_version]["Complexity"] = zpa.complexity()
 	# we can now clean up our build directory, as we have inspected the code and calculated ZenPack complexity:
 	call("rm -rf %s" % build_env["TMPDIR"], shell=True)	
 
