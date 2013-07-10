@@ -96,7 +96,6 @@ build_zenpack() {
 		pwd
 		die "Could not find egg build artifact. $artifact"
 	fi
-	rm -rf $TMPDIR
 	exit 0
 }
 

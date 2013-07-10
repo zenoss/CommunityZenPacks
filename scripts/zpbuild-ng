@@ -2,9 +2,10 @@
 
 import sys, os, string
 import urllib
-from subprocess import Popen,PIPE,STDOUT
+from subprocess import Popen,PIPE,STDOUT,call
 from zpbuild_globals_ng import builddefs, zprepo, zptemp, zpkeep
 import codecs, json, shutil, pkg_resources
+from zpanalyze import *
 
 if not os.path.exists(builddefs):
 	print("Cannot find build definition %s." % builddefs)
@@ -77,6 +78,9 @@ def buildPack(zpname, zenpack_json, rel_version):
 		log(": skipped\n")
 	a.write(output)
 	a.close()
+	if status == 1:
+		# if we didn't build, we're done. We can't do anything else.
+		return
 	# grab deps from egg, add them to our python-ized JSON to be output later:
 	zenpack_json["Releases"][rel_version]["Requires"] = []
 	if os.path.exists(build_env["KEEPDIR"] + "/requires.txt"):
@@ -95,6 +99,12 @@ def buildPack(zpname, zenpack_json, rel_version):
 			deps.append(d)
 		zenpack_json["Releases"][rel_version]["Requires"] = deps
 		r.close()
+	zpa = zpComplexity(os.path.join(build_env["TMPDIR"],pyname) ,pyname)
+	zpa.run()
+	zenpack_json["Releases"][rel_version]["ComplexityTags"] = ",".join(list(zpa.tags))
+	# we can now clean up our build directory, as we have inspected the code and calculated ZenPack complexity:
+	call("rm -rf %s" % build_env["TMPDIR"], shell=True)	
+
 	# write out JSON that can be imported by the wiki - this is JSON for this release only.
 	jsonfile = build_env["PKGDIR"] + "/release.json"
 	log("Writing out JSON to %s..." % jsonfile )

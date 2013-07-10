@@ -30,7 +30,7 @@ def scanFileForRegex(fn, expression):
 	r = re.compile(expression)
 	found = False
 	for l in a.readlines():
-		if r.match(l):
+		if r.search(l):
 			found = True
 			break
 	a.close()
@@ -49,6 +49,8 @@ class zpComplexity(object):
 			"Scripts",
 			"Datasources",
 			"ModelerPlugins",
+			"UI",
+			"ModelExtensions",
 			"APIs",
 			"CollectorDaemons",
 			"HubServices",
@@ -124,6 +126,19 @@ class zpComplexity(object):
 				if scanFileForRegex(f, "^class %s\(" % classname):
 					self.tags.add("ModelerPlugins")
 					return
+	def UITest(self):
+		for f in locate_zcml(self.zp_path):
+			if not scanFileForElement(f, 'resourceDirectory'):
+				if not scanFileForElement(f, 'viewlet'):
+					continue
+			self.tags.add("UI")
+			return
+	
+	def modelExtensionsTest(self):
+		for f in glob.glob("%s/*.py" % self.zp_path):
+			if scanFileForRegex(f, 'Products\.ZenModel\.(Device|DeviceComponent|ManagedEntity|HWComponent|OSComponent|FileSystem|IpInterface|OSProcess|CPU|PowerSupply|TemperatureSensor|Fan|ExpansionCard|HardDisk|IpService|WinService|Software)'):
+				self.tags.add("ModelExtensions")
+				return
 	
 	def APIsTest(self):
 		for f in locate_py(self.zp_path):
@@ -191,6 +206,8 @@ class zpComplexity(object):
 		self.scriptsTest()
 		self.datasourcesTest()
 		self.modelerPluginsTest()
+		self.UITest()
+		self.modelExtensionsTest()
 		self.APIsTest()
 		self.collectorDaemonsTest()
 		self.hubServicesTest()
