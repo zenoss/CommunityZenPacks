@@ -75,10 +75,9 @@ class zpComplexity(object):
 		}
 		self.zp_path = os.path.join(os.path.normpath(path), os.path.sep.join(zpname.split(".")))
 
-	@property
 	def complexity(self):
 		c = 0
-		for k in self.keys:
+		for k in self.tags:
 			c += self.complexity_scale[k]
 		return c
 
@@ -194,7 +193,8 @@ class zpComplexity(object):
 		my_attrs = [ 
 			"ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider",
 			"ZenPacks.zenoss.Impact.impactd.interfaces.INodeTriggers", 
-			"ZenPacks.zenoss.Impact.stated.interfaces.IStateProvider" 
+			"ZenPacks.zenoss.Impact.stated.interfaces.IStateProvider" ,
+			"ZenPacks.zenoss.DynamicView.interfaces.IRelationsProvider"
 		]
 		for f in locate_zcml(self.zp_path):
 			for el in scanFileForElement(f, "subscriber"):
